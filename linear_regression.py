@@ -38,7 +38,6 @@ class LinearRegression:
             self.theta0 -= (learningRate * tmp0) / self.m
             self.theta1 -= (learningRate * tmp1) / self.m
             estimate_price_new_serie = pd.concat([pd.Series([estimatePriceDenormalized(self.theta0, self.theta1, 0, self)]) ,estimatePriceDenormalized(self.theta0, self.theta1, self.X, self)])
-            print(estimate_price_new_serie)
             estimated_prices.append(estimate_price_new_serie)
             # estimated_prices.insert(0, estimatePriceDenormalized(self.theta0, self.theta1, 0, self))
             precisions.append(self.precision() * 100)
@@ -56,10 +55,8 @@ class LinearRegression:
     def save_model(self):
         X_mean = np.mean(self.X)
         X_std = np.std(self.X)
-        print(self.theta0, self.theta1)
         theta0_denormalized = self.theta0 - (self.theta1 * X_mean / X_std)
         theta1_denormalized = self.theta1 / X_std
-        print(theta0_denormalized, theta1_denormalized)
         np.savez('model.npz', theta0=theta0_denormalized, theta1=theta1_denormalized)
 
     def plotData(self):
