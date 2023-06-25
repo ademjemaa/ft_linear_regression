@@ -27,6 +27,7 @@ class LinearRegression:
         estimated_prices = []
         precisions = []
         formulas = []
+        error_function = []
         for _ in range(epochs):
             tmp0 = 0
             tmp1 = 0
@@ -41,12 +42,14 @@ class LinearRegression:
             estimated_prices.append(estimate_price_new_serie)
             # estimated_prices.insert(0, estimatePriceDenormalized(self.theta0, self.theta1, 0, self))
             precisions.append(self.precision() * 100)
+            error_function.append(int(tmp0))
             formulas.append(
                 f"θ0({denormalize(self.theta0, self.theta1, self.X)[0]:.2f}) + (θ1({denormalize(self.theta0, self.theta1, self.X)[1]:.2f}) * Mileage)"
             )
         self.estimated_prices = estimated_prices
         self.precisions = precisions
         self.formulas = formulas
+        self.error_function = error_function
         return estimated_prices, precisions, formulas, (self.theta0 - (self.theta1 * np.mean(self.X) / np.std(self.X))), self.theta1 / np.std(self.X)
 
 
@@ -56,10 +59,7 @@ class LinearRegression:
         print(self.theta0, self.theta1)
         theta0_denormalized = self.theta0 - (self.theta1 * X_mean / X_std)
         theta1_denormalized = self.theta1 / X_std
-        # theta0_denormalized = self.theta0 * X_std + X_mean - (self.theta1 * X_mean * X_std)
-        # theta1_denormalized = self.theta1 * X_std
         print(theta0_denormalized, theta1_denormalized)
-        # print(theta0_denormalizedBeta, theta1_denormalizedBeta)
         np.savez('model.npz', theta0=theta0_denormalized, theta1=theta1_denormalized)
 
     def plotData(self):
@@ -73,21 +73,33 @@ class LinearRegression:
         import matplotlib.pyplot as plt
         from matplotlib.animation import FuncAnimation
 
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(10, 8))
         ax.scatter(self.X, self.Y)
         line, = ax.plot([], [], color='blue', alpha=0.2)
         lines_actual = [ax.plot([], [], color='red', alpha=0.2)[0] for _ in range(self.m)]
         ax.set_xlabel("Mileage")
         ax.set_ylabel("Price")
-        precision_text = ax.text(0.05, 0.95, "", transform=ax.transAxes)
+        precision_text = ax.text(0.05, 0.98, "", transform=ax.transAxes)
         formula_text = ax.text(0.50, 0.90, "", transform=ax.transAxes)
+        error_text = ax.text(0.50, 0.60, "", transform=ax.transAxes)
+
 
         def animate(frame):
             tmp_X = pd.concat([pd.Series([0]), self.X])
-            print(tmp_X)
             line.set_data(tmp_X, self.estimated_prices[frame])
+        
+            predicted_values_current = self.estimated_prices[frame].iloc[1:]
+            actual_values_current = self.Y
+            
+            for i in range(len(self.X)):
+                x_values = [self.X.iloc[i], self.X.iloc[i]]
+                y_values = [predicted_values_current[i], actual_values_current[i]]
+                lines_actual[i].set_data(x_values, y_values)
+            
             precision_text.set_text(f"Deviation: {self.precisions[frame]:.2f}%")
             formula_text.set_text(self.formulas[frame])
+            error_text.set_text(f"Total Loss: {self.error_function[frame]:.2f}")
+            
             return line, precision_text, formula_text
 
         animation = FuncAnimation(fig, animate, frames=len(self.estimated_prices), interval=10, blit=True)
