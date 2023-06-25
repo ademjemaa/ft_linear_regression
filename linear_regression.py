@@ -14,7 +14,7 @@ class LinearRegression:
         self.m = len(self.X)
         self.theta0 = 0
         self.theta1 = 0
-        self.train(learningRate=0.01, epochs=10000)  # Call train with default values
+        self.train(learningRate=0.01, epochs=1000)  # Call train with default values
         self.save_model()
 
     def precision(self):
@@ -36,7 +36,10 @@ class LinearRegression:
                 tmp1 += error * self.X_normalized[i]
             self.theta0 -= (learningRate * tmp0) / self.m
             self.theta1 -= (learningRate * tmp1) / self.m
-            estimated_prices.append(estimatePriceDenormalized(self.theta0, self.theta1, self.X, self))
+            estimate_price_new_serie = pd.concat([pd.Series([estimatePriceDenormalized(self.theta0, self.theta1, 0, self)]) ,estimatePriceDenormalized(self.theta0, self.theta1, self.X, self)])
+            print(estimate_price_new_serie)
+            estimated_prices.append(estimate_price_new_serie)
+            # estimated_prices.insert(0, estimatePriceDenormalized(self.theta0, self.theta1, 0, self))
             precisions.append(self.precision() * 100)
             formulas.append(
                 f"θ0({denormalize(self.theta0, self.theta1, self.X)[0]:.2f}) + (θ1({denormalize(self.theta0, self.theta1, self.X)[1]:.2f}) * Mileage)"
@@ -73,21 +76,24 @@ class LinearRegression:
         fig, ax = plt.subplots()
         ax.scatter(self.X, self.Y)
         line, = ax.plot([], [], color='blue', alpha=0.2)
+        lines_actual = [ax.plot([], [], color='red', alpha=0.2)[0] for _ in range(self.m)]
         ax.set_xlabel("Mileage")
         ax.set_ylabel("Price")
         precision_text = ax.text(0.05, 0.95, "", transform=ax.transAxes)
         formula_text = ax.text(0.50, 0.90, "", transform=ax.transAxes)
 
         def animate(frame):
-            line.set_data(self.X, self.estimated_prices[frame])
+            tmp_X = pd.concat([pd.Series([0]), self.X])
+            print(tmp_X)
+            line.set_data(tmp_X, self.estimated_prices[frame])
             precision_text.set_text(f"Deviation: {self.precisions[frame]:.2f}%")
             formula_text.set_text(self.formulas[frame])
-            plt.pause(0.1)
             return line, precision_text, formula_text
 
-        animation = FuncAnimation(fig, animate, frames=len(self.estimated_prices), interval=200, blit=True)
+        animation = FuncAnimation(fig, animate, frames=len(self.estimated_prices), interval=10, blit=True)
         plt.show()
 
 
 if __name__ == '__main__':
     linear_regression = LinearRegression()
+    linear_regression.plotAnimatedGraph()
