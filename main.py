@@ -8,26 +8,21 @@ epochs = 10000
 linear_regression = LinearRegression()
 linear_regression.train(learningRate, epochs)
 
-model = np.load('model.npz')
-theta0 = model['theta0']
-theta1 = model['theta1']
+model = np.load("model.npz")
+theta0 = model["theta0"]
+theta1 = model["theta1"]
 
 
 while True:
     mileage_input = input("Enter the mileage (type 'exit' to quit): ")
-
-    # Check if the user entered 'exit'
-    if mileage_input.lower() == 'exit':
+    if mileage_input.lower() == "exit":
         break
-
-    # Try to convert the user input to an integer and estimate the price
     try:
         mileage = int(mileage_input)
         price = estimatePrice(theta0, theta1, mileage)
         print("Estimated price:", price)
     except ValueError:
         print("Please enter a valid number or type 'exit' to quit.")
-
 
 linear_regression = LinearRegression()
 linear_regression.plotAnimatedGraph()
