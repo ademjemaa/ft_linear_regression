@@ -134,4 +134,3 @@ class LinearRegression:
 
 if __name__ == "__main__":
     linear_regression = LinearRegression()
-    # linear_regression.plotAnimatedGraph()

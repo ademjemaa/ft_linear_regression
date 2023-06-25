@@ -31,7 +31,6 @@ except:
     )
     exit()
 
-data = pd.read_csv("data.csv")
 X = data.iloc[:, 0]
 
 
