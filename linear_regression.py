@@ -6,7 +6,13 @@ from estimate_price import denormalize
 
 class LinearRegression:
     def __init__(self, data_file="data.csv"):
-        self.data = pd.read_csv(data_file)
+        try:
+            self.data = pd.read_csv(data_file)
+        except:
+            print(
+                "Please import data.csv File"
+            )
+            exit()
         self.X = self.data.iloc[:, 0]
         self.Y = self.data.iloc[:, 1]
         self.X_normalized = (self.X - np.mean(self.X)) / np.std(self.X)
@@ -128,4 +134,4 @@ class LinearRegression:
 
 if __name__ == "__main__":
     linear_regression = LinearRegression()
-    linear_regression.plotAnimatedGraph()
+    # linear_regression.plotAnimatedGraph()

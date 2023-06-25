@@ -22,6 +22,15 @@ def denormalize(theta0, theta1, X):
 theta0 = 0
 theta1 = 0
 
+
+try:
+    data = pd.read_csv("data.csv")
+except:
+    print(
+        "Please import data.csv File"
+    )
+    exit()
+
 data = pd.read_csv("data.csv")
 X = data.iloc[:, 0]
 
@@ -31,7 +40,7 @@ if __name__ == "__main__":
         model = np.load("model.npz")
     except:
         print(
-            "The modal is not trained, please run the training program before using this program"
+            "The model is not trained, please run the training program before using this program"
         )
         exit()
     theta0 = model["theta0"]

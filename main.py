@@ -3,10 +3,9 @@ from linear_regression import LinearRegression
 from estimate_price import estimatePrice
 
 learningRate = 0.01
-epochs = 10000
+epochs = 1250
 
 linear_regression = LinearRegression()
-linear_regression.train(learningRate, epochs)
 
 model = np.load("model.npz")
 theta0 = model["theta0"]
@@ -24,5 +23,4 @@ while True:
     except ValueError:
         print("Please enter a valid number or type 'exit' to quit.")
 
-linear_regression = LinearRegression()
 linear_regression.plotAnimatedGraph()
