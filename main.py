@@ -23,4 +23,5 @@ while True:
     except ValueError:
         print("Please enter a valid number or type 'exit' to quit.")
 
+print("Linear regression Animation compiling")
 linear_regression.plotAnimatedGraph()

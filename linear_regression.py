@@ -129,7 +129,6 @@ class LinearRegression:
         animation = FuncAnimation(
             fig, animate, frames=len(self.estimated_prices), interval=10, blit=True
         )
-        animation.save("animation.gif", writer="pillow")
         plt.show()
 
 if __name__ == "__main__":
