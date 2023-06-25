@@ -38,8 +38,9 @@ class LinearRegression:
             self.theta1 -= (learningRate * tmp1) / self.m
             estimated_prices.append(estimatePriceDenormalized(self.theta0, self.theta1, self.X, self))
             precisions.append(self.precision() * 100)
-            formulas.append(f"θ0({denormalize(self.theta0, self.theta1, self.X)[0]:.2f}) + (θ1({denormalize(self.theta0, self.theta1, self.X)[1]:.2f}) * Mileage)")
-
+            formulas.append(
+                f"θ0({denormalize(self.theta0, self.theta1, self.X)[0]:.2f}) + (θ1({denormalize(self.theta0, self.theta1, self.X)[1]:.2f}) * Mileage)"
+            )
         self.estimated_prices = estimated_prices
         self.precisions = precisions
         self.formulas = formulas
@@ -82,9 +83,9 @@ class LinearRegression:
             precision_text.set_text(f"Deviation: {self.precisions[frame]:.2f}%")
             formula_text.set_text(self.formulas[frame])
             plt.pause(0.1)
-            return line, precision_text
+            return line, precision_text, formula_text
 
-        animation = FuncAnimation(fig, animate, frames=len(self.estimated_prices), interval=20, blit=True)
+        animation = FuncAnimation(fig, animate, frames=len(self.estimated_prices), interval=200, blit=True)
         plt.show()
 
 

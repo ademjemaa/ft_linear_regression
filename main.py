@@ -3,8 +3,8 @@ from linear_regression import LinearRegression
 from estimate_price import estimatePrice
 
 data_file = 'data.csv'
-learningRate = 0.1
-epochs = 100
+learningRate = 0.01
+epochs = 10000
 
 linear_regression = LinearRegression(data_file)
 estimated_prices, precisions, formulas, theta0, theta1 = linear_regression.train(learningRate, epochs)

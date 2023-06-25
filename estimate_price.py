@@ -34,14 +34,14 @@ X = data.iloc[:, 0]
 
 if __name__ == '__main__':
     while True:
-    mileage_input = input("Enter the mileage (type 'exit' to quit): ")
+        mileage_input = input("Enter the mileage (type 'exit' to quit): ")
 
-    if mileage_input.lower() == 'exit':
-        break
+        if mileage_input.lower() == 'exit':
+            break
 
-    try:
-        mileage = int(mileage_input)
-        price = estimatePrice(theta0, theta1, mileage)
-        print("Estimated price:", price)
-    except ValueError:
-        print("Please enter a valid number or type 'exit' to quit.")
+        try:
+            mileage = int(mileage_input)
+            price = estimatePrice(theta0, theta1, mileage)
+            print("Estimated price:", price)
+        except ValueError:
+            print("Please enter a valid number or type 'exit' to quit.")
