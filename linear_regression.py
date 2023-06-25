@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 from estimate_price import estimatePrice
+from estimate_price import estimatePriceDenormalized
+from estimate_price import denormalize
 
 
 class LinearRegression:
@@ -18,11 +20,8 @@ class LinearRegression:
     def precision(self):
         total = 0
         for i in range(self.m):
-            total += abs(abs(self.Y[i] / self.estimatePrice(self.theta0, self.theta1, self.X_normalized[i])) - 1)
+            total += abs(abs(self.Y[i] / estimatePrice(self.theta0, self.theta1, self.X_normalized[i])) - 1)
         return (total / self.m)
-
-    def estimatePrice(self, theta0, theta1, mileage):
-        return theta0 + (theta1 * mileage)
 
     def train(self, learningRate, epochs):
         estimated_prices = []
@@ -32,14 +31,14 @@ class LinearRegression:
             tmp0 = 0
             tmp1 = 0
             for i in range(self.m):
-                error = self.estimatePrice(self.theta0, self.theta1, self.X_normalized[i]) - self.Y[i]
+                error = estimatePrice(self.theta0, self.theta1, self.X_normalized[i]) - self.Y[i]
                 tmp0 += error
                 tmp1 += error * self.X_normalized[i]
             self.theta0 -= (learningRate * tmp0) / self.m
             self.theta1 -= (learningRate * tmp1) / self.m
-            estimated_prices.append(self.estimatePrice(self.theta0, self.theta1, self.X_normalized))
+            estimated_prices.append(estimatePriceDenormalized(self.theta0, self.theta1, self.X, self))
             precisions.append(self.precision() * 100)
-            formulas.append(f"θ0({(self.theta0 - (self.theta1 * np.mean(self.X) / np.std(self.X))):.2f}) + (θ1({self.theta1 / np.std(self.X):.2f}) * Mileage)")
+            formulas.append(f"θ0({denormalize(self.theta0, self.theta1, self.X)[0]:.2f}) + (θ1({denormalize(self.theta0, self.theta1, self.X)[1]:.2f}) * Mileage)")
 
         self.estimated_prices = estimated_prices
         self.precisions = precisions
@@ -50,9 +49,13 @@ class LinearRegression:
     def save_model(self):
         X_mean = np.mean(self.X)
         X_std = np.std(self.X)
+        print(self.theta0, self.theta1)
         theta0_denormalized = self.theta0 - (self.theta1 * X_mean / X_std)
         theta1_denormalized = self.theta1 / X_std
+        # theta0_denormalized = self.theta0 * X_std + X_mean - (self.theta1 * X_mean * X_std)
+        # theta1_denormalized = self.theta1 * X_std
         print(theta0_denormalized, theta1_denormalized)
+        # print(theta0_denormalizedBeta, theta1_denormalizedBeta)
         np.savez('model.npz', theta0=theta0_denormalized, theta1=theta1_denormalized)
 
     def plotData(self):
