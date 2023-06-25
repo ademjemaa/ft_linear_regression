@@ -33,7 +33,11 @@ X = data.iloc[:, 0]
 
 if __name__ == '__main__':
     # Load the model
-    model = np.load('model.npz')
+    try:
+        model = np.load('model.npz')
+    except:
+        print("The modal is not trained, please run the training program before using this program")
+        exit()
     theta0 = model['theta0']
     theta1 = model['theta1']
     while True:
